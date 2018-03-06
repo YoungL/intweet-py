@@ -18,4 +18,3 @@ def init_db():
     BASE.metadata.create_all(get_db_engine())
 
 init_db()
-session = get_db_session()

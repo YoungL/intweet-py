@@ -3,8 +3,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 import hashlib
-from random import randint
-import re
+from random import randint, choice
+import validators
 import string
 
 class User(BASE):
@@ -28,7 +28,7 @@ class User(BASE):
 
     @validates('email')
     def validate_email(self, key, email):
-        if not re.match("[^@]+@[^@]+\.[^@]+", email):
+        if not validators.email(email):
             raise Exception("Invalid Email Address")
         return email
 

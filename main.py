@@ -1,17 +1,33 @@
 #!/usr/bin/env python
 
 from models.user import User
+from models.tweet import Tweet
+from models.rule import Rule
 from database import get_db_session
-from database import session
+from crypt import crypt
+from sqlalchemy import exc
 
+session = get_db_session()
+if session.query(User).filter(User.email=="leontest@10.com").count() == 0:
+    myuser = User(fullname='leon', email='leontest@10.com', password='password', admin=1)
+    session.add(myuser)
+    session.commit()
+    print myuser.id
+else:
+    print "Email address taken"
 
-myuser = User(fullname='leon', email='leon@test.com', password='password', salt='blah', admin=1)
-session.add(myuser)
-session.commit()
-
-print myuser.id
-
-query = session.query(User).filter(User.email=="youngl234@gmail.com")
+query = session.query(User).filter(User.email=="leon@test9.com")
 user = query.one()
+print user.validate_password('password')
 
-print user.fullname
+query = session.query(Tweet).filter(Tweet.timestamp=="1381824130")
+tweet = query.one()
+
+print tweet.id
+
+
+query = session.query(Tweet)
+tweets = query.all()
+
+for tweet in tweets:
+    print "tweet: %s, rulename: %s" % (tweet.tweet, tweet.rule.rulename)
