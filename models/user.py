@@ -15,6 +15,7 @@ class User(BASE):
     salt = Column(String, nullable=False)
     admin = Column(Integer, nullable=False)
     email = Column("email", String)
+    active = Column(Integer, nullable=False)
     _password = Column("password", String, nullable=False)
 
     @hybrid_property

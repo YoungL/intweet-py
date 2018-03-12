@@ -14,5 +14,5 @@ class Rule(BASE):
     active = Column(Integer, nullable=False)
     parentrule = Column(Integer, nullable=True)
     account_handle = Column(String, nullable=False)
-    userid = Column(Integer, ForeignKey("user.id"), nullable=False)
-    user = relationship("User", foreign_keys=[userid], primaryjoin="User.id == Rule.userid")
+    userid = Column(Integer, ForeignKey("tbl_users.id"), nullable=False)
+    user = relationship("User", foreign_keys=[userid])
