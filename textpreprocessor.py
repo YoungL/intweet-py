@@ -1,7 +1,7 @@
 import re
 from nltk.stem import PorterStemmer
 
-class TextPreProcessor:
+class TextPreProcessor(object):
     
     def process_text(self, textstring):
         # Convert Text String To Lower
@@ -50,9 +50,10 @@ class TextPreProcessor:
         fh = open('stopwords.txt', 'r')
         for line in fh.readlines():
             stopwords.add(line.strip('\n'))
-
+        fh.close()
+        
         list_of_words = [x for x in list_of_words if x not in stopwords]
-        print list_of_words
+        return list_of_words
         
     
     def remove_stemmed_stop_words(self, list_of_words):
@@ -61,9 +62,10 @@ class TextPreProcessor:
         fh = open('stemmed_stop_words.txt', 'r')
         for line in fh.readlines():
             stopwords.add(line.strip('\n'))
-
+        fh.close()
+        
         list_of_words = [x for x in list_of_words if x not in stopwords]
-        print list_of_words
+        return list_of_words
             
                 
     def stem_my_stop_words(self):

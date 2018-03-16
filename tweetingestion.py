@@ -33,13 +33,18 @@ class TweetIngestion:
         location = result.user.location.encode(errors='ignore').\
             decode('utf-32', 'ignore')
         tweet = Tweet(timestamp=result.created_at,
-                      tweet=text, location=location,
+                      tweet=text, 
+                      location=location,
                       from_screenname=result.user.screen_name,
                       ruleid=ruleid,
-                      profile_image_url=result.user.profile_image_url, profile_image_url_https=result.user.\
+                      profile_image_url=result.user.profile_image_url, 
+                      profile_image_url_https=result.user.\
                       profile_image_url_https,
-                      following=result.user.following, no_of_followers=result.user.followers_count,
-                      contacted=0, tweet_id=result.id, trained=0)
+                      following=result.user.following, 
+                      no_of_followers=result.user.followers_count,
+                      contacted=0, 
+                      tweet_id=result.id, 
+                      trained=0)
 
         session.add(tweet)
         session.commit()

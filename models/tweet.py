@@ -20,6 +20,5 @@ class Tweet(BASE):
     following = Column(Integer, nullable=False)
     tweet_id = Column(Integer, nullable=False)
     trained = Column(Integer, nullable=False)
-    postprocess_tweet = Column(UnicodeText, nullable=True)
     contacted = Column(Integer, nullable=False)
     rule = relationship("Rule", foreign_keys=[ruleid])
