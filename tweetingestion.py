@@ -16,11 +16,11 @@ class TweetIngestion:
         self.api = tweepy.API(auth)
         self.session = dbsession
         self.sentiment_analyser = SentimentAnalyser()
-        
+
     def process_rules(self):
         query = self.session.query(Rule.id).join(User).filter(
             Rule.userid == User.id,
-            Rule.active == 1, 
+            Rule.active == 1,
             User.active == 1
         )
         rules = query.all()
@@ -28,15 +28,19 @@ class TweetIngestion:
             self.ingest_tweet_for_rule(rule.id)
 
     def ingest_tweet_for_rule(self, ruleid):
-        query = self.session.query(Rule.id, Rule.keywords, Tweet.tweet_id).outerjoin(Tweet).\
-            filter(Rule.id == ruleid).order_by(Tweet.tweet_id.desc()).limit(1)
-        
+        query = self.session.query(
+            Rule.id,
+            Rule.keywords,
+            Tweet.tweet_id
+        ).outerjoin(Tweet).filter(Rule.id == ruleid).\
+            order_by(Tweet.tweet_id.desc()).limit(1)
+
         rule = query.one()
         for keyword in rule.keywords.split(", "):
             since_id = 0
             if rule.tweet_id > 0:
                 since_id = rule.tweet_id
-                
+
             results = self.api.search(q=keyword, since_id=since_id)
             for result in results:
                 self.commit_tweet_to_db(ruleid, result)
