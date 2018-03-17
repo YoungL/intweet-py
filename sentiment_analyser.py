@@ -42,6 +42,7 @@ class SentimentAnalyser:
         return 0
 
     def multinomial_naive_bayes(self, text):
+        print text
         processed_text = self.text_pre_processor.process_text(text)
 
         features = self.text_pre_processor.remove_stemmed_stop_words(
@@ -49,7 +50,7 @@ class SentimentAnalyser:
         )
 
         if self.neutral_match(features):
-            return {0: 0, 1: 1, 2: 0}
+            return 1
 
         feature_scores = self.get_features_scores(features)
 

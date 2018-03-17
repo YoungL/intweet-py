@@ -4,6 +4,7 @@ from database import get_db_session
 from models.rule import Rule
 from models.user import User
 from models.tweet import Tweet
+from sentiment_analyser import SentimentAnalyser
 import time
 
 
@@ -14,11 +15,12 @@ class TweetIngestion:
         auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         self.api = tweepy.API(auth)
         self.session = dbsession
+        self.sentiment_analyser = SentimentAnalyser()
 
     def ingest_tweets(self, user_active=1, rule_active=1):
         query = self.session.query(Rule).join(User).\
             filter(Rule.userid == User.id, Rule.active == rule_active,
-                   User.activ == user_active)
+                   User.active == user_active)
 
         rules = query.all()
 
@@ -30,9 +32,10 @@ class TweetIngestion:
 
     def commit_tweet_to_db(self, ruleid, result):
         text = result.text.encode(errors='ignore').\
-            decode('utf-32', 'ignore')
+            decode('utf-8', 'ignore')
         location = result.user.location.encode(errors='ignore').\
-            decode('utf-32', 'ignore')
+            decode('utf-8', 'ignore')
+        sentiment = self.sentiment_analyser.multinomial_naive_bayes(str(text))
         tweet = Tweet(
             timestamp=result.created_at,
             tweet=text,
@@ -45,7 +48,8 @@ class TweetIngestion:
             no_of_followers=result.user.followers_count,
             contacted=0,
             tweet_id=result.id,
-            trained=0
+            sentiment=sentiment,
+            trained=0,
         )
 
         session.add(tweet)
