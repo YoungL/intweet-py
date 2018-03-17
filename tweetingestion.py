@@ -7,8 +7,6 @@ from models.tweet import Tweet
 from sentiment_analyser import SentimentAnalyser
 import time
 
-from sqlalchemy.dialects import mysql
-
 
 class TweetIngestion:
 
@@ -46,7 +44,6 @@ class TweetIngestion:
     def commit_tweet_to_db(self, ruleid, result):
         text = result.text.encode(errors='ignore').\
             decode('utf-8', 'ignore')
-        print text
         location = result.user.location.encode(errors='ignore').\
             decode('utf-8', 'ignore')
         sentiment = self.sentiment_analyser.multinomial_naive_bayes(str(text))
