@@ -25,4 +25,5 @@ class Tweet(BASE):
     tweet_id = Column(Integer, nullable=False)
     trained = Column(Integer, nullable=False)
     contacted = Column(Integer, nullable=False)
+    sentiment = Column(Integer, nullable=True)
     rule = relationship("Rule", foreign_keys=[ruleid])

@@ -7,6 +7,8 @@ from models.tweet import Tweet
 from sentiment_analyser import SentimentAnalyser
 import time
 
+from sqlalchemy.dialects import mysql
+
 
 class TweetIngestion:
 
@@ -16,23 +18,35 @@ class TweetIngestion:
         self.api = tweepy.API(auth)
         self.session = dbsession
         self.sentiment_analyser = SentimentAnalyser()
-
-    def ingest_tweets(self, user_active=1, rule_active=1):
-        query = self.session.query(Rule).join(User).\
-            filter(Rule.userid == User.id, Rule.active == rule_active,
-                   User.active == user_active)
-
+        
+    def process_rules(self):
+        query = self.session.query(Rule.id).join(User).filter(
+            Rule.userid == User.id,
+            Rule.active == 1, 
+            User.active == 1
+        )
         rules = query.all()
-
         for rule in rules:
-            for keyword in rule.keywords.split(", "):
-                results = self.api.search(q=keyword)
-                for result in results:
-                    self.commit_tweet_to_db(rule.id, result)
+            self.ingest_tweet_for_rule(rule.id)
+
+    def ingest_tweet_for_rule(self, ruleid):
+        query = self.session.query(Rule.id, Rule.keywords, Tweet.tweet_id).outerjoin(Tweet).\
+            filter(Rule.id == ruleid).order_by(Tweet.tweet_id.desc()).limit(1)
+        
+        rule = query.one()
+        for keyword in rule.keywords.split(", "):
+            since_id = 0
+            if rule.tweet_id > 0:
+                since_id = rule.tweet_id
+                
+            results = self.api.search(q=keyword, since_id=since_id)
+            for result in results:
+                self.commit_tweet_to_db(ruleid, result)
 
     def commit_tweet_to_db(self, ruleid, result):
         text = result.text.encode(errors='ignore').\
             decode('utf-8', 'ignore')
+        print text
         location = result.user.location.encode(errors='ignore').\
             decode('utf-8', 'ignore')
         sentiment = self.sentiment_analyser.multinomial_naive_bayes(str(text))
@@ -58,4 +72,4 @@ class TweetIngestion:
 if __name__ == '__main__':
     session = get_db_session()
     tweetingestion = TweetIngestion(session)
-    tweetingestion.ingest_tweets()
+    tweetingestion.process_rules()
