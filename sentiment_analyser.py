@@ -13,9 +13,11 @@ import sys
 
 class SentimentAnalyser:
     
-    def __init__(self, dbsession):
-        self.session = dbsession
+    def __init__(self):
+        self.session = get_db_session()
+        self.text_pre_processor = TextPreProcessor()
         self.train_total = { 0:0 , 1:0, 2:0, "total": 0 }
+        
         query = self.session.query(TrainCache)
         for row in query.all():
             self.train_total["total"] += row.qty
@@ -38,11 +40,10 @@ class SentimentAnalyser:
         return 0
 
     def multinomial_naive_bayes(self, text):
-        tpp = TextPreProcessor()
-        processed_text = tpp.process_text(text)
-
-        features = tpp.remove_stemmed_stop_words(tpp.\
-            generate_features(processed_text))
+        processed_text = self.text_pre_processor.process_text(text)
+        
+        features = self.text_pre_processor.remove_stemmed_stop_words(\
+            self.text_pre_processor.generate_features(processed_text))
 
         if self.neutral_match(features):
             return { 0:0, 1:1, 2:0 }
@@ -90,13 +91,13 @@ class SentimentAnalyser:
                                  decimal.Decimal(bottom[2]))
 
         if score[0] > score[1] and score[0] > score[2]:
-            return "Negative"
+            return 0
         elif score[1] > score[0] and score[1] > score[2]:
-            return "Neutral"
+            return 1
         elif score[2] > score[0] and score[2] > score[1]:
-            return "Positive"    
+            return 2    
         else:
-            return "Undertermined"            
+            return -1           
 
     def get_features_scores(self, features):
         query = self.session.query(Features).\
@@ -109,7 +110,5 @@ class SentimentAnalyser:
         return feature_scores
         
 if __name__ == '__main__':
-    session = get_db_session()
-    SA = SentimentAnalyser(session)
-
+    SA = SentimentAnalyser()
     print SA.multinomial_naive_bayes(sys.argv[1])
