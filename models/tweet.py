@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.types import DateTime, UnicodeText
 import models.rule
 
+
 class Tweet(BASE):
     __tablename__ = 'tbl_raw_tweets'
 
@@ -14,7 +15,10 @@ class Tweet(BASE):
     location = Column(String, nullable=False)
     no_of_followers = Column(Integer, nullable=False)
     from_screenname = Column(String, nullable=False)
-    ruleid = Column("rule", Integer, ForeignKey("tbl_monitor.id"), nullable=False)
+    ruleid = Column(
+        "rule", Integer, ForeignKey("tbl_monitor.id"),
+        nullable=False
+    )
     profile_image_url = Column(String, nullable=False)
     profile_image_url_https = Column(String, nullable=False)
     following = Column(Integer, nullable=False)

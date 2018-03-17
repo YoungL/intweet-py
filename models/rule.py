@@ -4,6 +4,7 @@ from sqlalchemy.orm import validates, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 import models.user
 
+
 class Rule(BASE):
     __tablename__ = 'tbl_monitor'
 

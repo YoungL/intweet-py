@@ -6,6 +6,7 @@ from models.user import User
 from models.tweet import Tweet
 import time
 
+
 class TweetIngestion:
 
     def __init__(self, dbsession):
@@ -16,8 +17,8 @@ class TweetIngestion:
 
     def ingest_tweets(self, user_active=1, rule_active=1):
         query = self.session.query(Rule).join(User).\
-            filter(Rule.userid==User.id, Rule.active==rule_active,
-                   User.active==user_active)
+            filter(Rule.userid == User.id, Rule.active == rule_active,
+                   User.activ == user_active)
 
         rules = query.all()
 
@@ -32,19 +33,20 @@ class TweetIngestion:
             decode('utf-32', 'ignore')
         location = result.user.location.encode(errors='ignore').\
             decode('utf-32', 'ignore')
-        tweet = Tweet(timestamp=result.created_at,
-                      tweet=text, 
-                      location=location,
-                      from_screenname=result.user.screen_name,
-                      ruleid=ruleid,
-                      profile_image_url=result.user.profile_image_url, 
-                      profile_image_url_https=result.user.\
-                      profile_image_url_https,
-                      following=result.user.following, 
-                      no_of_followers=result.user.followers_count,
-                      contacted=0, 
-                      tweet_id=result.id, 
-                      trained=0)
+        tweet = Tweet(
+            timestamp=result.created_at,
+            tweet=text,
+            location=location,
+            from_screenname=result.user.screen_name,
+            ruleid=ruleid,
+            profile_image_url=result.user.profile_image_url,
+            profile_image_url_https=result.user.profile_image_url_https,
+            following=result.user.following,
+            no_of_followers=result.user.followers_count,
+            contacted=0,
+            tweet_id=result.id,
+            trained=0
+        )
 
         session.add(tweet)
         session.commit()

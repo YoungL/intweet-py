@@ -7,6 +7,7 @@ from random import randint, choice
 import validators
 import string
 
+
 class User(BASE):
     __tablename__ = 'tbl_users'
 
