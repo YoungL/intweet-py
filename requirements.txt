@@ -1,0 +1,8 @@
+decorator==4.2.1
+MySQL-python==1.2.5
+nltk==3.2.5
+numpy==1.14.2
+pep8==1.7.1
+six==1.11.0
+SQLAlchemy==1.2.5
+validators==0.12.1
