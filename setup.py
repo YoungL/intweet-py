@@ -31,7 +31,7 @@ setup(
                         'flask-bootstrap',
                         'idna',
                         'itsdangerous',
-                        'jinja2'
+                        'jinja2',
                         'mysql-python',
                         'nltk',
                         'numpy',
