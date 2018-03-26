@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
-{% block content %}
-
+{% block body_content %}
 {% if error.errors >= 1 %}
 <div class="alert alert-danger" role="alert">
   {{ error.message }}
