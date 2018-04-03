@@ -1,7 +1,7 @@
 from webapp import webapp
 from webapp.config import *
 from models.user import User
-from flask import render_template, request, url_for, session, flash, redirect
+from flask import render_template, request, url_for, session, flash, redirect, send_from_directory
 from database import get_db_session
 from crypt import crypt
 from sqlalchemy import exc
@@ -78,3 +78,7 @@ def register():
         "page_name": "Register"
     }
     return render_template('register.html', global_config=CONFIG, local_config=local_config)
+    
+@webapp.route('/assets/<path:path>')
+def send_css(path):
+    return send_from_directory('assets', path)

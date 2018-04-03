@@ -1,16 +1,29 @@
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
     <title>{{ global_config.site_name }} - {{ local_config.page_name}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" />
+
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Titillium+Web:400,300,700&amp;subset=latin,latin-ext" />
+    <link rel="stylesheet" href="http://www.intweet.co.uk/application/resources/pure/css/layouts/marketing.css" />
+
   </head>
   <body>
-  <div class="navbar navbar-fixed-top">
-    <a href="home">Home</a> | <a href="register">Register</a> | <a href="login">Log In</a>
-  </div>
-  {% block body_content %}
-  {% endblock %}
+    <div class="content">
+      <div class="header">
+          <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
+              <a class="pure-menu-heading" href="">InTweet</a>
+
+              <ul>
+                  <li><a href="/">Home</a></li>
+                  <li><a href="register">Register</a></li>
+              </ul>
+          </div>
+      </div>
+      {% block body_content %}
+      {% endblock %}
+    </div>
   </body>
 </html>
