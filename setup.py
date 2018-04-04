@@ -32,7 +32,7 @@ setup(
                         'idna',
                         'itsdangerous',
                         'jinja2',
-                        'mysql-python',
+                        'pymysql',
                         'nltk',
                         'numpy',
                         'oauthlib',
