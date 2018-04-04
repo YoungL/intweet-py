@@ -1,8 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import intweet.config
-import logging
+from intweet import config
 
 
 BASE = declarative_base()
@@ -22,4 +21,6 @@ def get_db_session():
 def init_db():
     BASE.metadata.create_all(get_db_engine())
 
-init_db()
+
+if __name__ == "__main__":
+    init_db()

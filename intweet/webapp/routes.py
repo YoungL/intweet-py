@@ -78,7 +78,7 @@ def register():
         "page_name": "Register"
     }
     return render_template('register.html', global_config=CONFIG, local_config=local_config)
-    
+
 @webapp.route('/assets/<path:path>')
 def send_css(path):
     return send_from_directory('assets', path)
