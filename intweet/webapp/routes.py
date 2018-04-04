@@ -1,5 +1,4 @@
-from intweet.webapp import webapp
-from intweet.webapp.config import *
+from intweet.config import *
 from intweet.models.user import User
 from flask import render_template, request, url_for, session, flash, redirect, send_from_directory, Blueprint
 from intweet.database import get_db_session
