@@ -1,10 +1,16 @@
+import logging
+import sys
 from intweet.models.user import User
 from intweet.models.tweet import Tweet
 from intweet.models.rule import Rule
 from intweet.database import get_db_session
-from crypt import crypt
-from sqlalchemy import exc
 from sqlalchemy.dialects import mysql
+
+
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
+                    level=logging.INFO,
+                    stream=sys.stdout)
+
 
 session = get_db_session()
 if session.query(User).filter(User.email == "leontest@10.com").count() == 0:
@@ -16,22 +22,22 @@ if session.query(User).filter(User.email == "leontest@10.com").count() == 0:
     )
     session.add(myuser)
     session.commit()
-    print myuser.id
+    logging.info(myuser.id)
 else:
-    print "Email address taken"
+    logging.info("Email address taken")
 
 query = session.query(User).filter(User.email == "leon@test9.com")
 user = query.one()
-print user.validate_password('password')
+logging.info(user.validate_password('password'))
 
-query = session.query(Tweet).filter(Tweet.timestam == "1381824130")
+query = session.query(Tweet).filter(Tweet.timestamp == "1381824130")
 tweet = query.one()
 
-print tweet.id
+logging.info(tweet.id)
 
 
 query = session.query(Rule).join(User).filter(Rule.userid == User.id)
-print str(query.statement.compile(dialect=mysql.dialect()))
+logging.info(str(query.statement.compile(dialect=mysql.dialect())))
 rules = query.all()
 for rule in rules:
-    print "rule: %s, fullname: %s" % (rule.rulename, rule.user.fullname)
+    logging.info("rule: %s, fullname: %s" % (rule.rulename, rule.user.fullname))
