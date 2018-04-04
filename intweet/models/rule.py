@@ -1,8 +1,6 @@
 from intweet.database import BASE
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import validates, relationship
-from sqlalchemy.ext.hybrid import hybrid_property
-import intweet.models.user
+from sqlalchemy.orm import relationship
 
 
 class Rule(BASE):

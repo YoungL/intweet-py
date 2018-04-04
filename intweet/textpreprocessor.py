@@ -21,6 +21,10 @@ class TextPreProcessor(object):
         textstring_list = filter(lambda x: x[0] != '@', textstring.split())
 
         stemmer = PorterStemmer()
+        try:
+            xrange
+        except NameError:
+            xrange = range
         for i in xrange(len(textstring_list)):
             # Convert abreviations
             textstring_list[i] = self.convert_abbreviations(textstring_list[i])
@@ -101,12 +105,14 @@ class TextPreProcessor(object):
         else:
             return textstring
 
+
 if __name__ == '__main__':
     text = "Thiiis iiis aaaa.   - where rather lmao #word 12tweet \
         shopping @leon yes I am really happy! http://www.google.com \
         https://someurl.co.uk"
 
     tpp = TextPreProcessor()
+    tpp.stem_my_stop_words()
     processed_text = tpp.process_text(text)
     list_of_features = tpp.remove_stemmed_stop_words(
         tpp.generate_features(processed_text)

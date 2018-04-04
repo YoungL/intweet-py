@@ -14,7 +14,9 @@ logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
 
 if __name__ == "__main__":
     session = get_db_session()
-    if session.query(User).filter(User.email == "leontest@10.com").count() == 0:
+    if session.query(User).filter(
+        User.email == "leontest@10.com"
+    ).count() == 0:
         myuser = User(
             fullname='leon',
             email='leontest@10.com',
@@ -36,9 +38,9 @@ if __name__ == "__main__":
 
     logging.info(tweet.id)
 
-
     query = session.query(Rule).join(User).filter(Rule.userid == User.id)
     logging.info(str(query.statement.compile(dialect=mysql.dialect())))
     rules = query.all()
     for rule in rules:
-        logging.info("rule: %s, fullname: %s" % (rule.rulename, rule.user.fullname))
+        logging.info("rule: %s, fullname: %s" %
+                     (rule.rulename, rule.user.fullname))

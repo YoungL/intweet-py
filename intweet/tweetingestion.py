@@ -1,11 +1,11 @@
 import tweepy
-from intweet.config import *
+from intweet.config import ACCESS_TOKEN, ACCESS_TOKEN_SECRET, \
+    CONSUMER_KEY, CONSUMER_SECRET
 from intweet.database import get_db_session
 from intweet.models.rule import Rule
 from intweet.models.user import User
 from intweet.models.tweet import Tweet
 from intweet.sentiment_analyser import SentimentAnalyser
-import time
 
 
 class TweetIngestion:
@@ -69,6 +69,7 @@ class TweetIngestion:
 
         session.add(tweet)
         session.commit()
+
 
 if __name__ == '__main__':
     session = get_db_session()
