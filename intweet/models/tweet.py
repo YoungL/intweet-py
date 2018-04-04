@@ -1,9 +1,9 @@
-from database import BASE
+from intweet.database import BASE
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import validates, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.types import DateTime, UnicodeText
-import models.rule
+import intweet.models.rule
 
 
 class Tweet(BASE):

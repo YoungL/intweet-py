@@ -1,10 +1,10 @@
 import tweepy
-from config import *
-from database import get_db_session
-from models.rule import Rule
-from models.user import User
-from models.tweet import Tweet
-from sentiment_analyser import SentimentAnalyser
+from intweet.config import *
+from intweet.database import get_db_session
+from intweet.models.rule import Rule
+from intweet.models.user import User
+from intweet.models.tweet import Tweet
+from intweet.sentiment_analyser import SentimentAnalyser
 import time
 
 
