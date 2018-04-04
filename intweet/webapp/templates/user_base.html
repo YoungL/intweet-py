@@ -1,16 +1,98 @@
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
     <title>{{ global_config.site_name }} - {{ local_config.page_name}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Titillium+Web:400,300,700&amp;subset=latin,latin-ext" />
-  </head>
-  <body>
-  <div class="navbar navbar-fixed-top">
-    <a href="home">Home</a> | <a href="logout">Log Out</a> | {{ userdata.fullname }}
-  </div>
-  {% block body_content %}
-  {% endblock %}
+  <head>
+    <meta name="description" content=""/>
+   <meta name="author" content=""/>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+   <link rel="stylesheet" href="http://www.intweet.co.uk/application/resources/pure/css/layouts/side-menu.css" />
+   <link rel="stylesheet" href="http://www.intweet.co.uk/application/resources/pure/css/buttons.css" />
+   <link rel="stylesheet" href="http://www.intweet.co.uk/application/resources/pure/css/mfglabs_iconset.css" />
+   <script src="http://www.intweet.co.uk/application/resources/jquery/jquery-1.10.2.min.js"></script>
+   <script>
+       $(document).ready(function(){
+           var $tab = $('.pure-menu-shelf-icon');
+           $tab.click(function(){
+               var $this = $(this),
+                   target = $this.attr('data-target');
+               $('.pure-menu-shelf-icon').removeClass('active');
+               $('.pure-menu-shelf-content').removeClass('active');
+               $(target).addClass('active');
+               $this.addClass('active');
+               return false;
+           });
+       });
+   </script>
+</head>
+<body>
+   <div class="pure-g-r" id="layout">
+       <a href="#menu" id="menuLink" class="menu-link">
+   <span></span>
+</a>
+
+<div class="pure-u" id="menu">
+   <div class="pure-menu pure-menu-open">
+       <div class="pure-menu-shelf">
+           <a href="#" class="pure-menu-shelf-icon active" data-target=".pure-menu-shelf-content-1"><i class="icon-twitter"></i></a>
+           <a href="#" class="pure-menu-shelf-icon " data-target=".pure-menu-shelf-content-2"><i class="icon-chart"></i></a>
+           <a href="#" class="pure-menu-shelf-icon " data-target=".pure-menu-shelf-content-3"><i class="icon-spread"></i></a>
+       </div>
+       <ul class="pure-menu-shelf-content pure-menu-shelf-content-1 active">
+           <li class="pure-menu-selected menu-item-divided"><a class="nav-btn" href="http://www.intweet.co.uk/dashboard">Dashboard</a></li>
+            <li><a class="nav-btn" href="http://www.intweet.co.uk/freetext">Freetext (Beta)</a></li>
+     
+                   </ul>
+       <ul class="pure-menu-shelf-content pure-menu-shelf-content-2  ">
+           <li><a class="nav-btn" href="http://www.intweet.co.uk/monitor">View / Edit Rules</a></li>
+           <li><a class="nav-btn" href="http://www.intweet.co.uk/monitor/add">Add New Rule</a></li>
+           <li><a class="nav-btn" href="http://www.intweet.co.uk/prioritytweets">Priority Tweets</a></li>
+           <ul style="overflow-y: auto;" class="pure-menu-shelf-content pure-menu-shelf-content-3 ">
+                <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics">View All</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/10">Argos</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/7">British Airways</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/21">David Cameron</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/8">Easy Jet</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/4">EE</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/6">O2</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/2">Royal Mail</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/9">Ryanair</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/20">test</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/5">ThreeUK</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/3">Vodafone UK</a></li>
+                 
+                    <li><a class="nav-btn" href="http://www.intweet.co.uk/analytics/show/1">YodeL</a></li>
+                                   </ul>
+            <ul class="profile">
+              <li><a href="#" class="avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="{{ userdata.fullname }}" title="Edit Profile"/></a><a href="#" class="profile-name">{{ userdata.fullname }}</a></li>
+              <li class="utilities">
+                <a href="/logout"><i class="icon-signout"></i></a>
+              </li>
+            </ul>
+        </div>
+    </div>
+    <div class="pure-u-1" id="main">
+      <a class="logo" href="/">
+          <img src="http://www.intweet.co.uk/application/resources/pure/img/tweetlogo-text.png"/>
+      </a>
+      <div id="main">
+        {% block body_content %}
+        {% endblock %}
+      </div>
+    </div>  
   </body>
 </html>
