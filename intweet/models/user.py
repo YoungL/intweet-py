@@ -1,4 +1,4 @@
-from database import BASE
+from intweet.database import BASE
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property

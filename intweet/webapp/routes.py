@@ -1,8 +1,8 @@
-from webapp import webapp
-from webapp.config import *
-from models.user import User
+from intweet.webapp import webapp
+from intweet.webapp.config import *
+from intweet.models.user import User
 from flask import render_template, request, url_for, session, flash, redirect, send_from_directory
-from database import get_db_session
+from intweet.database import get_db_session
 from crypt import crypt
 from sqlalchemy import exc
 from sqlalchemy.dialects import mysql
