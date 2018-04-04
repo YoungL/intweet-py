@@ -2,12 +2,10 @@ import decimal
 import math
 import sys
 import logging
-from intweet.config import *
 from intweet.database import get_db_session
 from intweet.textpreprocessor import TextPreProcessor
 from intweet.models.traincache import TrainCache
 from intweet.models.features import Features
-from sqlalchemy.dialects import mysql
 from collections import defaultdict
 from sqlalchemy import func
 
@@ -122,6 +120,7 @@ class SentimentAnalyser:
             feature_scores[row.feature][row.sentiment] = row.count
 
         return feature_scores
+
 
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
