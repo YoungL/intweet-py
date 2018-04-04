@@ -1,3 +1,7 @@
+import decimal
+import math
+import sys
+import logging
 from intweet.config import *
 from intweet.database import get_db_session
 from intweet.textpreprocessor import TextPreProcessor
@@ -6,9 +10,6 @@ from intweet.models.features import Features
 from sqlalchemy.dialects import mysql
 from collections import defaultdict
 from sqlalchemy import func
-import decimal
-import math
-import sys
 
 
 class SentimentAnalyser:
@@ -42,7 +43,7 @@ class SentimentAnalyser:
         return 0
 
     def multinomial_naive_bayes(self, text):
-        print text
+        logging.info(text)
         processed_text = self.text_pre_processor.process_text(text)
 
         features = self.text_pre_processor.remove_stemmed_stop_words(
@@ -123,5 +124,9 @@ class SentimentAnalyser:
         return feature_scores
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
+                        level=logging.INFO,
+                        stream=sys.stdout)
+
     SA = SentimentAnalyser()
-    print SA.multinomial_naive_bayes(sys.argv[1])
+    logging.info(SA.multinomial_naive_bayes(sys.argv[1]))
