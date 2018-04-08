@@ -1,16 +1,20 @@
 from intweet.models.user import User
+from intweet.models.rule import Rule
+from intweet.models.tweet import Tweet
 from intweet.config import CONFIG
 from flask import render_template, request, url_for,\
     session, redirect, Blueprint
 from intweet.database import get_db_session
 import validators
 import re
+from sqlalchemy import func
 
 
 bp = Blueprint('routes', __name__)
 
 
 @bp.route('/')
+@bp.route('/dashboard')
 @bp.route('/home')
 def home():
     local_config = {
@@ -67,6 +71,7 @@ def login():
                 session['logged_in'] = True
                 session['user'] = user.email
                 session['name'] = user.fullname
+                session['user_id'] = user.id
                 return redirect(url_for('routes.home'))
 
     local_config = {
@@ -129,6 +134,7 @@ def register():
             session['logged_in'] = True
             session['user'] = user.email
             session['name'] = user.fullname
+            session['user_id'] = user.id
             return redirect(url_for('routes.home'))
 
     local_config = {
@@ -141,3 +147,47 @@ def register():
         local_config=local_config,
         error=error
     )
+
+
+@bp.route('/monitor', methods=['GET', 'POST'])
+def monitor():
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        local_config = {
+            "page_name": "Your Monitoring Rules"
+        }
+        db = get_db_session()
+        query = db.query(
+            Rule.rulename,
+            Rule.keywords,
+            Rule.description,
+            Rule.active,
+            Rule.account_handle,
+            Rule.id,
+            func.count().label('total')
+        ).filter(
+            Rule.userid == userdata['user_id']
+        ).outerjoin(
+            Tweet
+        ).filter(
+            Rule.id == Tweet.ruleid
+        ).group_by(
+            Rule.id
+        ).order_by(
+            Rule.rulename
+        )
+        rules = query.all()
+
+        return render_template(
+            'user_rules.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            rules=rules
+        )

@@ -1,0 +1,39 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+<div class="header">
+  <h1>Monitoring Rules</h1>
+  <h2>Current Rules</h2>
+</div>
+<div class="content">
+  <p>
+    <table class="pure-table">
+      <thead>
+        <tr>
+          <th>Rule</th>
+          <th>Twitter Handle</th>
+          <th>Keywords</th>
+          <th>Active</th>
+          <th>Tweets Analysed</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for rule in rules %}
+        <tr class="{{ loop.cycle('', 'pure-table-odd') }}">
+          <td>{{ rule.rulename }}</td>
+          <td>{{ rule.account_handle }}</td>
+          <td>{{ rule.keywords }}</td>
+          <td>{{ rule.active }}</td>
+          <td>{{ rule.total }}</td>
+          <td><a href="{{ config.site_url }}monitor/edit/{{ rule.id }}"  class="pure-button pure-button-secondary">Edit</a></td>
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+  </p>
+  <p>
+    <a href="{{ config.site_url }}/monitor/add" class="pure-button pure-button-primary">Add New Rule</a>
+  </p>
+
+</div>
+{% endblock %}
