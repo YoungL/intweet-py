@@ -231,13 +231,11 @@ def monitor():
             Rule.active,
             Rule.account_handle,
             Rule.id,
-            func.count().label('total')
+            func.count(Tweet.id).label('total')
         ).filter(
             Rule.userid == userdata['user_id']
-        ).outerjoin(
-            Tweet
-        ).filter(
-            Rule.id == Tweet.ruleid
+        ).join(
+            Tweet, isouter=True
         ).group_by(
             Rule.id
         ).order_by(
