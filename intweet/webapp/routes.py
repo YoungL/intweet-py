@@ -165,17 +165,17 @@ def monitor_add():
         }
         result = ""
         success = ""
-        error = { "errors": 0, "message": "" }
+        error = {"errors": 0, "message": ""}
         if request.method == 'POST':
             # Need to insert the new rule
             if not request.form['rulename']:
                 error['errors'] += 1
                 error['message'] = "Rulename is required"
-            
+
             if not request.form['keywords']:
                 error['errors'] += 1
                 error['message'] = "Keywords are required"
-                
+
             if not request.form['description']:
                 error['errors'] += 1
                 error['message'] = "Description is required"
@@ -197,7 +197,7 @@ def monitor_add():
                 db.add(rule)
                 db.commit()
                 success = "Rule added"
-        
+
         return render_template(
             'user_addrule.html',
             global_config=CONFIG,
@@ -207,7 +207,6 @@ def monitor_add():
             success=success,
             error=error
         )
-        
 
 
 @bp.route('/monitor', methods=['GET', 'POST'])
