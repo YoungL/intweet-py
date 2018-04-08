@@ -193,6 +193,7 @@ def monitor():
             rules=rules
         )
 
+
 @bp.route('/freetext', methods=['GET', 'POST'])
 def freetext():
     if not session.get('logged_in'):
@@ -203,8 +204,8 @@ def freetext():
         if request.method == 'POST':
             if request.form['freetext'] and len(request.form['freetext']) > 0:
                 freetext = request.form['freetext']
-                SA = SentimentAnalyser()
-                result = SA.multinomial_naive_bayes(freetext)
+                sa = SentimentAnalyser()
+                result = sa.multinomial_naive_bayes(freetext)
 
         local_config = {
             "page_name": "Freetext Classifier"
@@ -222,4 +223,3 @@ def freetext():
             result=result,
             freetext=freetext
         )
-        
