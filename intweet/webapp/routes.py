@@ -150,6 +150,65 @@ def register():
     )
 
 
+@bp.route('/monitor/add', methods=['GET', 'POST'])
+def monitor_add():
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        local_config = {
+            "page_name": "Add Monitoring Rule"
+        }
+        result = ""
+        success = ""
+        error = {"errors": 0, "message": ""}
+        if request.method == 'POST':
+            # Need to insert the new rule
+            if not request.form['rulename']:
+                error['errors'] += 1
+                error['message'] = "Rulename is required"
+
+            if not request.form['keywords']:
+                error['errors'] += 1
+                error['message'] = "Keywords are required"
+
+            if not request.form['description']:
+                error['errors'] += 1
+                error['message'] = "Description is required"
+
+            if not request.form['handle']:
+                error['errors'] += 1
+                error['message'] = "Twitter Handle is required"
+
+            if error['errors'] == 0:
+                db = get_db_session()
+                rule = Rule(
+                    rulename=request.form['rulename'],
+                    keywords=request.form['keywords'],
+                    account_handle=request.form['handle'],
+                    description=request.form['description'],
+                    active=1,
+                    userid=userdata['user_id']
+                )
+                db.add(rule)
+                db.commit()
+                success = "Rule added"
+
+        return render_template(
+            'user_addrule.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            result=result,
+            success=success,
+            error=error
+        )
+
+
 @bp.route('/monitor', methods=['GET', 'POST'])
 def monitor():
     if not session.get('logged_in'):
@@ -171,13 +230,11 @@ def monitor():
             Rule.active,
             Rule.account_handle,
             Rule.id,
-            func.count().label('total')
+            func.count(Tweet.id).label('total')
         ).filter(
             Rule.userid == userdata['user_id']
-        ).outerjoin(
-            Tweet
-        ).filter(
-            Rule.id == Tweet.ruleid
+        ).join(
+            Tweet, isouter=True
         ).group_by(
             Rule.id
         ).order_by(
