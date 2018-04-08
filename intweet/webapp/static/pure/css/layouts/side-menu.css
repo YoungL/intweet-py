@@ -1,0 +1,440 @@
+    body,
+html {
+    color: #777;
+    height: 100%;
+}
+
+/*
+Add transition to containers so they can push in and out.
+*/
+#menu {overflow: hidden;}
+
+#layout,
+#menu,
+.menu-link,
+#menu .profile a,
+.nav-btn,
+a.pure-menu-shelf-icon i {
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+/*
+This is the parent `<div>` that contains the menu and the content area.
+*/
+#layout {
+    padding-left: 200px; /* left col width "#menu" */
+    left: 0;
+}
+
+/*
+The content `<div>` is where all your content goes.
+*/
+.content {
+    padding: 0 2em;
+    /* max-width: 800px; */
+    margin-bottom: 50px;
+    line-height: 1.6em;
+}
+
+a.logo {
+    text-transform: uppercase;
+    background: #70b7c6;
+    padding: 0;
+    display: block;
+    top: 0;
+    height: 50px;
+}
+
+a.logo img {
+    top: 4px;
+    position: relative;
+    height: 43px;
+    left: 30px;
+}
+
+.content_analytics {
+    margin: 0 auto;
+    padding: 0 0em;
+    margin-bottom: 50px;
+    line-height: 1.6em;
+}
+
+.header {
+     margin: 0;
+     color: #333;
+     padding: 2.5em 2em 1.5em;
+ }
+    .header h1 {
+        margin: 0.2em 0;
+        font-size: 3em;
+        font-weight: 300;
+    }
+     .header h2 {
+        font-weight: 300;
+        color: #ccc;
+        padding: 0;
+        margin-top: 0;
+    }
+
+.content-subhead {
+    margin: 50px 0 20px 0;
+    font-weight: 300;
+    color: #888;
+}
+
+/*
+The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
+appears on the left side of the page.
+
+By using the combination of `position: fixed; top: 0; bottom:0;`, we can make
+the menu have 100% height and be fixed on the page as the rest of it scrolls.
+*/
+#menu {
+    margin-left: -200px; /* this should be "#menu" width */
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 200px; /* this should be "#menu" width */
+    bottom: 0;
+    z-index: 1; /* so the menu or its navicon stays above all content */
+    background: #191818;
+    overflow-y: auto;
+    -webkit-overflow-scroll: touch; /* for smooth scrolling on mobile */
+}
+    /*
+    All anchors inside the menu should be styled like this.
+    */
+    #menu .nav-btn,
+    .logo {
+        color: #999;
+        font-size: 10pt;
+        border: none;
+        padding: 0.8em 0 0.8em 20px;
+    }
+
+    /*
+    Remove all background/borders, since we are applying them to #menu.
+    */
+    #menu .pure-menu {height:100%}
+     #menu .pure-menu,
+     #menu .pure-menu ul {
+        border: none;
+        background: transparent;
+    }
+
+    /*
+    Add that light border to separate items into groups.
+    */
+
+        /*
+        Change color of the anchor links on hover/focus.
+        */
+        #menu .pure-menu li .nav-btn:hover,
+        #menu .pure-menu li .nav-btn:focus {
+            background: #333;
+        }
+
+        #menu .pure-menu li.pure-menu-selected .nav-btn:hover,
+        #menu .pure-menu li.pure-menu-selected .nav-btn:focus {
+            background: #444;
+        }
+        
+    #menu .pure-menu-scroll div { clear: both; }
+
+    /*
+    This styles the selected menu item `<li>`.
+    */
+    #menu .pure-menu-selected {
+        background: #444;
+    }
+    #menu .pure-menu-heading {
+        background: #1f8dd6;
+        height: 60px;
+    }
+        /*
+        This styles a link within a selected menu item `<li>`.
+        */
+        #menu .pure-menu-selected .nav-btn {
+            color: #CCC;
+            font-weight: bold;
+        }
+
+    /*
+    This styles the menu heading.
+    */
+    #menu .pure-menu-heading {
+        font-size: 110%;
+        color: #fff;
+        margin: 0;
+    }
+
+/* -- Dynamic Button For Responsive Menu -------------------------------------*/
+
+/*
+The button to open/close the Menu is custom-made and not part of Pure. Here's
+how it works:
+*/
+
+/*
+`.menu-link` represents the responsive menu toggle that shows/hides on
+small screens.
+*/
+.menu-link {
+    display: none; /* show this only on small screens */
+    top: 0;
+    left: 150px; /* `#menu`'s width */
+    background: #000;
+    font-size: 10px; /* change this value to increase/decrease button size */
+    z-index: 10;
+    width: 2em;
+    height: auto;
+    padding: 2.4em 1.6em;
+}
+
+    .menu-link:hover,
+    .menu-link:focus {
+        background: #000;
+    }
+
+    .menu-link span {
+        position: relative;
+        display: block;
+    }
+
+    .menu-link span,
+    .menu-link span:before,
+    .menu-link span:after {
+        background-color: #fff;
+        width: 100%;
+        height: 0.2em;
+    }
+
+        .menu-link span:before,
+        .menu-link span:after {
+            position: absolute;
+            margin-top: -0.6em;
+            content: " ";
+        }
+
+        .menu-link span:after {
+            margin-top: 0.6em;
+        }
+
+
+/* -- Responsive Styles (Media Queries) ------------------------------------- */
+
+/*
+Hides the menu at `767px`, but modify this based on your app's needs.
+*/
+@media (max-width: 767px) {
+
+    .header {
+        text-align: left;
+    }
+
+    /*
+    Navigation Push styles.
+    */
+    #layout {
+        position: relative;
+        padding-left: 0;
+    }
+        #layout.active {
+            position: relative;
+            left: 150px;
+        }
+            #layout.active #menu {
+                left: 200px;
+                width: 200px;
+            }
+
+    #menu {
+        left: 0;
+    }
+
+    .menu-link {
+        position: fixed;
+        left: 0;
+        display: block; /* show the button on small screens */
+    }
+
+    #layout.active .menu-link {
+        left: 200px;
+    }
+}
+
+#menu ul.profile {
+  bottom: 0;
+  position: absolute;
+  top: inherit;
+  width: 160px;
+  padding: 20px;
+  font-size: 10pt;
+  line-height: 20px;
+  background-color: #222;
+  border-top: 1px solid #333;
+}
+
+#menu .profile li {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+
+#menu .profile a {
+  padding: 0;
+}
+
+#menu a.profile-name {
+  padding-left: 35px;
+}
+
+#menu .profile a:hover {
+  background: none;
+  color: #FFF;
+}
+
+#menu .profile .utilities {
+  float: right;
+}
+
+#menu .profile .utilities a {
+  line-height: auto;
+}
+
+.avatar {
+  width: 25px;
+  height: 25px;
+  -webkit-border-radius: 50% 50%;
+  border-radius: 50% 50%;
+  overflow: hidden;
+  position: absolute;
+  top: -2px;
+  left: 0;
+}
+
+.pure-table {
+  overflow:hidden;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.pure-table thead {
+  background-color: #333;
+  color: #FFF;
+}
+
+.pure-table td, .pure-table th {
+  padding: 10px 10px;
+  font-size: 10pt;
+  border-left: 1px solid #dedede;
+}
+
+.pure-table thead tr th {
+  border-left: 1px solid #222;
+}
+
+.content_analytics {
+  padding: 0 30px;
+}
+
+#chart_container {
+  background-color: #222;
+  overflow: hidden;
+  padding: 20px;
+  margin: 10px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+#chart_container .line {
+  padding: 0 10px;
+  background-color: #191919;
+  border-radius: 5px;
+  float: left;
+  margin-right: 20px;
+}
+
+#chart_container #legend {
+  margin-top: 20px;
+  line-height: 40px;
+}
+
+#chart_container .rickshaw_graph .y_ticks path,
+#chart_container .rickshaw_graph .x_ticks path{
+  stroke: none;
+}
+
+#chart_container .rickshaw_graph .x_tick .title {
+    padding: 3px 7px;
+    border-radius: 4px;
+    margin-left: 66px;
+    bottom: 14px;
+    color: #555;
+    font-size: 20px;
+}
+
+.pure-menu-shelf {
+    background-color: #111;
+    z-index:  2000;
+    position: relative;
+    clear:  both;
+    float:  left;
+    width: 200px;
+    border-bottom: 1px solid #222;
+    -webkit-box-shadow: inset 0 1px 0 #333;
+    box-shadow: inset 0 1px 0 #333;
+}
+
+.pure-menu > ul {
+    clear: both;
+}
+
+a.pure-menu-shelf-icon {
+    padding: 11px 23px;
+    position: relative;
+    text-indent: 2px;
+    float: left;
+    display: inline-block;
+    zoom: 1;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+}
+
+.pure-menu-shelf-icon.active {
+    background-color: #191818;
+    top: 1px;
+    border-right: 1px solid #222;
+    border-left: 1px solid #333;
+}
+
+.pure-menu-shelf-icon.active i,
+a.pure-menu-shelf-icon:hover i {
+    color: #CCC;
+}
+
+.pure-menu-shelf-content {
+    height: 75%; 
+    padding-bottom: 63px;
+    display: none;
+}
+
+.pure-menu-shelf-content.active {
+    display: block;
+}
+
+#main #main {
+    padding-left: 30px;
+}
+
+.pure-button-primary,
+a.pure-button-primary,
+.pure-button-secondary,
+a.pure-button-secondary {
+    background: #70b7c6;
+    text-shadow: none;
+}
