@@ -1,6 +1,7 @@
 from intweet.models.user import User
 from intweet.models.rule import Rule
 from intweet.models.tweet import Tweet
+from intweet.sentiment_analyser import SentimentAnalyser
 from intweet.config import CONFIG
 from flask import render_template, request, url_for,\
     session, redirect, Blueprint
@@ -191,3 +192,34 @@ def monitor():
             userdata=userdata,
             rules=rules
         )
+
+@bp.route('/freetext', methods=['GET', 'POST'])
+def freetext():
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        result = ""
+        freetext = ""
+        if request.method == 'POST':
+            if request.form['freetext'] and len(request.form['freetext']) > 0:
+                freetext = request.form['freetext']
+                SA = SentimentAnalyser()
+                result = SA.multinomial_naive_bayes(freetext)
+
+        local_config = {
+            "page_name": "Freetext Classifier"
+        }
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        return render_template(
+            'user_freetext.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            result=result,
+            freetext=freetext
+        )
+        
