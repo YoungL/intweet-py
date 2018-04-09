@@ -1,0 +1,41 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+<div class="header">
+  <h1>Monitoring Rules</h1>
+  <h2>Add New Rule</h2>
+</div>
+
+<div class="content">
+  {% if error.errors >= 1 %}
+  <p>
+    <div class="alert alert-danger" role="alert">
+      {{ error.message }}
+    </div>
+  </p>
+  {% endif %}
+  {{ success }}<br />
+  <p>
+    <form action="{{ config.site_url }}/monitor/add" method="post" accept-charset="utf-8" class="pure-form pure-form-aligned">
+      <div class="pure-control-group">
+        <label for="rulename" class="pure-u-1-4">Rule Name</label>
+        <input class="pure-u-3-4" type="text" name="rulename" value="" placeholder="Enter Rule Name" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="keywords" class="pure-u-1-4">Keywords</label>
+        <input class="pure-u-3-4" type="text" name="keywords" value="" placeholder="Enter Comma Seperated Keywords" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="handle" class="pure-u-1-4">Twitter Handle</label>
+        <input class="pure-u-3-4" type="text" name="handle" value="" placeholder="@twitter_handle" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="description" class="pure-u-1-4">Description</label>
+        <textarea class="pure-u-3-4" name="description" rows="6" required></textarea>
+      </div>
+      <div class="pure-controls">
+        <input class="pure-button pure-button-primary" type="submit" value="Add Rule" />
+      </div>
+    </form>
+  </p>
+</div>
+{% endblock %}
