@@ -8,7 +8,7 @@
 <div class="content">
   <p>      
     {{ result }}<br />            
-    <form action="http://www.intweet.co.uk/index.php/freetext" method="post" accept-charset="utf-8" class="pure-form pure-form-aligned">
+    <form action="{{ config.site_url }}/freetext" method="post" accept-charset="utf-8" class="pure-form pure-form-aligned">
       <div class="pure-control-group">
         <label for="freetext" class="pure-u-1-4">FreeText</label>
         <textarea class="pure-u-3-4" name="freetext" rows="6" required>{{ freetext }}</textarea>
