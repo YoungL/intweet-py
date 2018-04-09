@@ -103,11 +103,11 @@ class SentimentAnalyser:
             )
 
         if score[0] > score[1] and score[0] > score[2]:
-            return 0
+            return "Negative"
         elif score[1] > score[0] and score[1] > score[2]:
-            return 1
+            return "Neutral"
         elif score[2] > score[0] and score[2] > score[1]:
-            return 2
+            return "Positive"
         else:
             return -1
 

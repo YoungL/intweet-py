@@ -61,7 +61,7 @@ class TextPreProcessor(object):
     def remove_stemmed_stop_words(self, list_of_words):
         # Build our stop words dict
         stopwords = set()
-        fh = open('stemmed_stop_words.txt', 'r')
+        fh = open('intweet/stemmed_stop_words.txt', 'r')
         for line in fh.readlines():
             stopwords.add(line.strip('\n'))
         fh.close()
@@ -70,8 +70,8 @@ class TextPreProcessor(object):
         return list_of_words
 
     def stem_my_stop_words(self):
-        fh1 = open('stopwords.txt', 'r')
-        fh2 = open('stemmed_stop_words.txt', 'w')
+        fh1 = open('intweet/stopwords.txt', 'r')
+        fh2 = open('intweet/stemmed_stop_words.txt', 'w')
         stemmer = PorterStemmer()
         for line in fh1.readlines():
             fh2.write(stemmer.stem(line.strip('\n')) + "\n")
