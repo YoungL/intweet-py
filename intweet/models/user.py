@@ -26,7 +26,8 @@ class User(BASE):
     @password.setter
     def password(self, password):
         self.salt = self.generate_salt()
-        self._password = hashlib.sha256(password + self.salt).hexdigest()
+        passwd_bytes = password.encode('utf-8') + self.salt.encode('utf-8')
+        self._password = hashlib.sha256(passwd_bytes).hexdigest()
 
     @validates('email')
     def validate_email(self, key, email):
@@ -40,6 +41,7 @@ class User(BASE):
         return salt
 
     def validate_password(self, password):
-        if hashlib.sha256(password + self.salt).hexdigest() == self.password:
+        passwd_bytes = password.encode('utf-8') + self.salt.encode('utf-8')
+        if hashlib.sha256(passwd_bytes).hexdigest() == self.password:
             return True
         return False

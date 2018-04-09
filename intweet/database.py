@@ -19,7 +19,7 @@ def get_db_session():
 
 
 def init_db():
-    BASE.metadata.create_all(get_db_engine())
+    BASE.metadata.create_all(bind=get_db_engine())
 
 
 if __name__ == "__main__":
