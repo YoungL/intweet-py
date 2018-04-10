@@ -8,7 +8,8 @@ from flask import render_template, request, url_for,\
 from intweet.database import get_db_session
 import validators
 import re
-from sqlalchemy import func
+from sqlalchemy import func, and_
+from sqlalchemy.orm.exc import NoResultFound
 
 
 bp = Blueprint('routes', __name__)
@@ -150,6 +151,115 @@ def register():
     )
 
 
+@bp.route('/monitor/rule/<path:rule>', methods=['POST'])
+def monitor_rule_post(rule):
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        local_config = {
+            "page_name": "Add Monitoring Rule"
+        }
+
+        error = {"errors": 0, "message": ""}
+
+        if not request.form['rulename']:
+            error['errors'] += 1
+            error['message'] = "Rulename is required"
+
+        if not request.form['keywords']:
+            error['errors'] += 1
+            error['message'] = "Keywords are required"
+
+        if not request.form['description']:
+            error['errors'] += 1
+            error['message'] = "Description is required"
+
+        if not request.form['account_handle']:
+            error['errors'] += 1
+            error['message'] = "Twitter Handle is required"
+
+        if not request.form['active']:
+            error['errors'] += 1
+            error['message'] = "Active is required"
+
+        success = ""
+        db = get_db_session()
+        query = db.query(Rule).\
+            filter(and_(Rule.id == rule, Rule.userid == userdata['user_id']))
+
+        try:
+            rule = query.one()
+        except NoResultFound:
+            return error_page("Invalid Rule ID")
+
+        if error['errors'] == 0:
+            if request.form['active'] == 'yes':
+                active = 1
+            else:
+                active = 0
+            rule.rulename = request.form['rulename']
+            rule.keywords = request.form['keywords']
+            rule.account_handle = request.form['account_handle']
+            rule.description = request.form['description']
+            rule.active = active
+            db.commit()
+            success = "Rule Updated"
+
+        return render_template(
+            'user_edit_rule.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            ruledata=rule,
+            success=success,
+            error=error
+        )
+
+
+@bp.route('/monitor/rule/<path:rule>', methods=['GET'])
+def monitor_rule(rule):
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        local_config = {
+            "page_name": "Edit Monitoring Rule"
+        }
+
+        try:
+            rule = int(rule)
+        except ValueError:
+            return error_page("Invalid Rule ID")
+
+        db = get_db_session()
+        query = db.query(Rule).\
+            filter(and_(Rule.id == rule, Rule.userid == userdata['user_id']))
+
+        try:
+            rule = query.one()
+        except NoResultFound:
+            return error_page("Invalid Rule ID")
+
+        return render_template(
+            'user_edit_rule.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            ruledata=rule,
+            success="",
+            error={"errors": 0, "message": ""}
+        )
+
+
 @bp.route('/monitor/add', methods=['GET', 'POST'])
 def monitor_add():
     if not session.get('logged_in'):
@@ -167,7 +277,6 @@ def monitor_add():
         success = ""
         error = {"errors": 0, "message": ""}
         if request.method == 'POST':
-            # Need to insert the new rule
             if not request.form['rulename']:
                 error['errors'] += 1
                 error['message'] = "Rulename is required"
@@ -280,3 +389,10 @@ def freetext():
             result=result,
             freetext=freetext
         )
+
+
+def error_page(message):
+    return render_template(
+        'error.html',
+        message=message
+    )

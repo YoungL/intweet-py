@@ -1,0 +1,51 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+<div class="header">
+  <h1>Monitoring Rules</h1>
+  <h2>Edit Rule</h2>
+</div>
+
+<div class="content">
+  {% if error.errors >= 1 %}
+  <p>
+    <div class="alert alert-danger" role="alert">
+      {{ error.message }}
+    </div>
+  </p>
+  {% endif %}
+  {{ success }}<br />
+  <p>            
+    <form action="{{ global_config.site_url }}/monitor/rule/{{ ruledata.id }}" method="post" accept-charset="utf-8" class="pure-form pure-form-aligned">                
+      <div class="pure-control-group">
+        <label class="pure-u-1-4"  for="rulename">Rule Name</label>
+        <input class="pure-u-3-4"  type="text" name="rulename" value="{{ ruledata.rulename }}" placeholder="Enter Rule Name" size="50" required="" />
+      </div>
+      <div class="pure-control-group">
+        <label class="pure-u-1-4"  for="account_handle">Account Handle</label>
+        <input class="pure-u-3-4"  type="text" name="account_handle" value="{{ ruledata.account_handle }}" placeholder="Enter Twitter Handle" size="50" required="" />
+      </div>
+      <div class="pure-control-group">
+        <label class="pure-u-1-4"  for="keywords">Keywords</label>
+        <input class="pure-u-3-4"  type="text" name="keywords" value="{{ ruledata.keywords }}" placeholder="Enter Comma Seperated Keywords" size="50" required="" />
+      </div>
+      <div class="pure-control-group">
+        <label class="pure-u-1-4"  for="description">Description</label>
+        <textarea class="pure-u-3-4"  name="description" cols="50" rows="6" required="" >{{ ruledata.description }}</textarea>
+      </div>
+      <div class="pure-control-group">
+        <label for="active">Active</label>
+        <select size="1" name="active">
+        	<option value="yes" {% if ruledata.active == 1 %}selected=""{% endif %}>Yes</option>
+        	<option value="no" {% if ruledata.active == 0 %}selected=""{% endif %}>No</option>
+        </select>
+      </div>
+      <div class="pure-controls">
+        <label for="agree" class="pure-checkbox">
+            <input name="agree" id="agree" type="checkbox" required="" /> I confirm that changing anything here may skew my results
+        </label>
+        <input class="pure-button pure-button-primary" type="submit" value="Edit Rule" />
+      </div>
+    </form>
+  </p>
+</div>
+{% endblock %}
