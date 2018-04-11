@@ -1,2 +1,9 @@
 *.pyc
 config.py
+.coverage
+.tox*
+cover/*
+coverage.xml
+flake8.out
+intweet.egg-info/*
+nosetests.xml
