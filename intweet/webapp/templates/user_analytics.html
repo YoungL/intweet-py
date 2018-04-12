@@ -1,0 +1,181 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+
+<div class="header">
+  <h1>Analytics</h1>
+  <h2>Tweets by Sentiment</h2>
+</div>
+
+<div class="content_analytics">
+  <h3>Overview of {{ ruledata.rulename }}: {{ start }} - {{ finish }}</h3>
+  <p>
+    <link type="text/css" rel="stylesheet" href="{{ global_config.site_url }}/static/rickshaw/rickshaw.min.css" />
+    <link type="text/css" rel="stylesheet" href="{{ global_config.site_url }}/static/rickshaw/graph.css" />
+    <link type="text/css" rel="stylesheet" href="{{ global_config.site_url }}/static/rickshaw/detail.css" />
+    <link type="text/css" rel="stylesheet" href="{{ global_config.site_url }}/static/rickshaw/legend.css" />
+    <script src="{{ global_config.site_url }}/static/rickshaw/vendor/d3.v3.js"></script>
+    <script src="{{ global_config.site_url }}/static/rickshaw/vendor/d3.layout.min.js"></script>
+    <script src="{{ global_config.site_url }}/static/rickshaw/rickshaw.min.js"></script>
+    <style>
+      #chart_container {
+              position: relative;
+              font-family: Arial, Helvetica, sans-serif;
+      }
+      #chart {
+              position: relative;
+              left: 40px;
+      }
+      .rickshaw_graph .y_ticks {
+              left: 0;
+      }
+      #y_axis {
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: -40px;
+              width: 40px;
+      }
+    </style>
+
+    <div id="chart_container">
+      <div id="chart2"></div>
+      <div id="legend"></div>
+    </div>
+      
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
+    <script>
+      $(function() {
+        $( "#start" ).datepicker({dateFormat: "dd/mm/yy"});
+      });
+       $(function() {
+        $( "#finish" ).datepicker({dateFormat: "dd/mm/yy"});
+      });
+    </script>
+
+    <script>
+    function resize () {
+        document.querySelector("#chart2").innerHTML = "";
+        //document.querySelector("#y_axis").innerHTML = "";
+        document.querySelector("#legend").innerHTML = "";
+        var palette = new Rickshaw.Color.Palette();
+        var mydiv = document.querySelector("#chart2");
+        var curr_width = mydiv.style.width;
+        var graph = new Rickshaw.Graph( {
+                element: document.querySelector("#chart2"),
+                width: curr_width,
+                height: 300,
+                unstack: true,
+                series: [
+                        {
+                                name: "Negative",
+                                data: [ {% for date, result in analyticdata.iteritems() %}{ x: {{ date | unixtime }}, y: {{ result[0] }}}{{ "," if not loop.last }} {% endfor %}],
+                                color: '#f49b6f'
+                        },
+                        {
+                                name: "Neutral",
+                                data: [ {% for date, result in analyticdata.iteritems() %}{ x: {{ date | unixtime }}, y: {{ result[1] }}}{{ "," if not loop.last }} {% endfor %}],
+                                color: '#95d1ea'
+                        },
+                        {
+                                name: "Positive",
+                                data: [ {% for date, result in analyticdata.iteritems() %}{ x: {{ date | unixtime }}, y: {{ result[2] }}}{{ "," if not loop.last }} {% endfor %}],
+                                color:'#a5ea95'
+                        }
+                ]
+        } );
+        var time = new Rickshaw.Fixtures.Time();
+        var days = time.unit('day');
+        var x_axis = new Rickshaw.Graph.Axis.Time( { graph: graph, timeUnit: days,  } );
+
+        var y_axis = new Rickshaw.Graph.Axis.Y( {
+                graph: graph,
+                orientation: 'left',
+                tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                element: document.getElementById('y_axis'),
+        } );
+        graph.setRenderer('line');
+
+            var legend = document.querySelector('#legend');
+            
+            var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
+
+            	render: function(args) {
+
+            		legend.innerHTML = args.formattedXValue;
+
+            		args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
+
+            			var line = document.createElement('div');
+            			line.className = 'line';
+
+            			var swatch = document.createElement('div');
+            			swatch.className = 'swatch';
+            			swatch.style.backgroundColor = d.series.color;
+
+            			var label = document.createElement('div');
+            			label.className = 'label';
+            			label.innerHTML = d.name + ": " + Math.round(d.formattedYValue) + "%";
+
+            			line.appendChild(swatch);
+            			line.appendChild(label);
+
+            			legend.appendChild(line);
+
+            			var dot = document.createElement('div');
+            			dot.className = 'dot';
+            			dot.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
+            			dot.style.borderColor = d.series.color;
+                        console.log(d.value.y0 + ", " + d.value.y);
+
+            			this.element.appendChild(dot);
+
+            			dot.className = 'dot active';
+
+            			this.show();
+
+            		}, this );
+                    }
+            });
+
+            var hover = new Hover( { graph: graph } );
+
+            graph.render();
+        }
+        window.onload = resize();
+        window.onresize = resize;
+    </script>
+              
+    <form action="{{ global_config.site_url }}/analytics/show/{{ ruledata.id }}" method="post" class="pure-form">
+      <input type="text" name="start" id="start" placeholder="Start Date" />
+      <input type="text" name="finish" id="finish" placeholder="Finish Date" />
+      <input type="submit" value="Go" class="pure-button pure-button-primary" />
+    </form>
+    <br />
+
+    <table class="pure-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Negative</th>
+          <th>Neutral</th>
+          <th>Positive</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for date, result in analyticdata.iteritems() %}
+        <tr class="{{ loop.cycle('', 'pure-table-odd') }}">
+            <td>{{ date }}</td>
+            <td>{{ result[0] | round }}%</td>
+            <td>{{ result[1] | round }}%</td>
+            <td>{{ result[2] | round }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </P>
+</div>
+
+{% endblock %}

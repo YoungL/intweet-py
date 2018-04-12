@@ -55,6 +55,9 @@
            </ul>
            <ul style="overflow-y: auto;" class="pure-menu-shelf-content pure-menu-shelf-content-3 ">
              <li><a class="nav-btn" href="{{ global_config.site_url }}/analytics">View All</a></li>
+             {% for rule in menu_rules %}
+              <li><a class="nav-btn" href="{{ global_config.site_url }}/analytics/show/{{ rule.id }}">{{ rule.rulename }}</a></li>
+             {% endfor %}
            </ul>
            <ul class="profile">
              <li>
