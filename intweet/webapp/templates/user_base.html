@@ -40,23 +40,23 @@
       <div class="pure-u" id="menu">
          <div class="pure-menu pure-menu-open">
            <div class="pure-menu-shelf">
-             <a href="#" class="pure-menu-shelf-icon active" data-target=".pure-menu-shelf-content-1"><i class="icon-twitter"></i></a>
-             <a href="#" class="pure-menu-shelf-icon " data-target=".pure-menu-shelf-content-2"><i class="icon-chart"></i></a>
-             <a href="#" class="pure-menu-shelf-icon " data-target=".pure-menu-shelf-content-3"><i class="icon-spread"></i></a>
+             <a href="#" class="pure-menu-shelf-icon{% if local_config.home %} active{% endif %}" data-target=".pure-menu-shelf-content-1"><i class="icon-twitter"></i></a>
+             <a href="#" class="pure-menu-shelf-icon{% if local_config.monitor %} active{% endif %}" data-target=".pure-menu-shelf-content-2"><i class="icon-chart"></i></a>
+             <a href="#" class="pure-menu-shelf-icon{% if local_config.analytics %} active{% endif %}" data-target=".pure-menu-shelf-content-3"><i class="icon-spread"></i></a>
            </div>
-           <ul class="pure-menu-shelf-content pure-menu-shelf-content-1 active">
-             <li class="pure-menu-selected menu-item-divided"><a class="nav-btn" href="{{ global_config.site_url }}/dashboard">Dashboard</a></li>
-             <li><a class="nav-btn" href="{{ global_config.site_url }}/freetext">Freetext (Beta)</a></li>
+           <ul class="pure-menu-shelf-content pure-menu-shelf-content-1{% if local_config.home %} active{% endif %}">
+             <li{% if local_config.dashboard %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/dashboard">Dashboard</a></li>
+             <li{% if local_config.freetext %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/freetext">Freetext (Beta)</a></li>
            </ul>
-           <ul class="pure-menu-shelf-content pure-menu-shelf-content-2">
-             <li><a class="nav-btn" href="{{ global_config.site_url }}/monitor">View / Edit Rules</a></li>
-             <li><a class="nav-btn" href="{{ global_config.site_url }}/monitor/add">Add New Rule</a></li>
-             <li><a class="nav-btn" href="{{ global_config.site_url }}/prioritytweets">Priority Tweets</a></li>
+           <ul class="pure-menu-shelf-content pure-menu-shelf-content-2{% if local_config.monitor %} active{% endif %}">
+             <li{% if local_config.viewrules %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/monitor">View / Edit Rules</a></li>
+             <li{% if local_config.addrules %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/monitor/add">Add New Rule</a></li>
+             <li{% if local_config.prioritytweets %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/prioritytweets">Priority Tweets</a></li>
            </ul>
-           <ul style="overflow-y: auto;" class="pure-menu-shelf-content pure-menu-shelf-content-3 ">
+           <ul style="overflow-y: auto;" class="pure-menu-shelf-content pure-menu-shelf-content-3{% if local_config.analytics %} active{% endif %}">
              <li><a class="nav-btn" href="{{ global_config.site_url }}/analytics">View All</a></li>
              {% for rule in menu_rules %}
-              <li><a class="nav-btn" href="{{ global_config.site_url }}/analytics/show/{{ rule.id }}">{{ rule.rulename }}</a></li>
+              <li{% if local_config.analytics and rule.id == ruledata.id %} class="pure-menu-selected menu-item-divided"{% endif %}><a class="nav-btn" href="{{ global_config.site_url }}/analytics/show/{{ rule.id }}">{{ rule.rulename }}</a></li>
              {% endfor %}
            </ul>
            <ul class="profile">

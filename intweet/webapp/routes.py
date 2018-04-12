@@ -22,7 +22,9 @@ bp = Blueprint('routes', __name__)
 @bp.route('/home')
 def home():
     local_config = {
-        "page_name": "Home"
+        "page_name": "Home",
+        "home": True,
+        "dashboard": True
     }
     # Home Page
     if session.get('logged_in'):
@@ -234,7 +236,8 @@ def analytics_show(rule):
                 ) * 100
 
         local_config = {
-            "page_name": "Analytics for %s" % (rule.rulename)
+            "page_name": "Analytics for %s" % (rule.rulename),
+            "analytics": True
         }
 
         return render_template(
@@ -261,7 +264,9 @@ def monitor_rule_post(rule):
             'user_id': session.get('user_id')
         }
         local_config = {
-            "page_name": "Add Monitoring Rule"
+            "page_name": "Add Monitoring Rule",
+            "monitor": True,
+            "viewrules": True
         }
 
         error = {"errors": 0, "message": ""}
@@ -332,7 +337,9 @@ def monitor_rule(rule):
             'user_id': session.get('user_id')
         }
         local_config = {
-            "page_name": "Edit Monitoring Rule"
+            "page_name": "Edit Monitoring Rule",
+            "monitor": True,
+            "viewrules": True
         }
 
         try:
@@ -372,7 +379,9 @@ def monitor_add():
             'user_id': session.get('user_id')
         }
         local_config = {
-            "page_name": "Add Monitoring Rule"
+            "page_name": "Add Monitoring Rule",
+            "monitor": True,
+            "addrules": True
         }
         result = ""
         success = ""
@@ -431,7 +440,9 @@ def monitor():
             'user_id': session.get('user_id')
         }
         local_config = {
-            "page_name": "Your Monitoring Rules"
+            "page_name": "Your Monitoring Rules",
+            "monitor": True,
+            "viewrules": True
         }
         db = get_db_session()
         query = db.query(
@@ -477,7 +488,9 @@ def freetext():
                 result = sa.multinomial_naive_bayes(freetext)
 
         local_config = {
-            "page_name": "Freetext Classifier"
+            "page_name": "Freetext Classifier",
+            "home": True,
+            "freetext": True
         }
         userdata = {
             'fullname': session.get('name'),
