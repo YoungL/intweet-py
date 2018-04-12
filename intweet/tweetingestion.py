@@ -51,6 +51,13 @@ class TweetIngestion:
         location = result.user.location.encode(errors='ignore').\
             decode('utf-8', 'ignore')
         sentiment = self.sentiment_analyser.multinomial_naive_bayes(str(text))
+        if sentiment == "Positive":
+            sentiment = 2
+        elif sentiment == "Neutral": 
+            sentiment = 1
+        else:
+            sentiment = 0
+            
         tweet = Tweet(
             timestamp=result.created_at,
             tweet=text,
