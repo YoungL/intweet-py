@@ -53,11 +53,11 @@ class TweetIngestion:
         sentiment = self.sentiment_analyser.multinomial_naive_bayes(str(text))
         if sentiment == "Positive":
             sentiment = 2
-        elif sentiment == "Neutral": 
+        elif sentiment == "Neutral":
             sentiment = 1
         else:
             sentiment = 0
-            
+
         tweet = Tweet(
             timestamp=result.created_at,
             tweet=text,
