@@ -12,6 +12,7 @@ from sqlalchemy import func, and_
 from sqlalchemy.orm.exc import NoResultFound
 import datetime
 from collections import OrderedDict
+from intweet.trainingsystem import TrainingSystem
 
 
 bp = Blueprint('routes', __name__)
@@ -218,7 +219,7 @@ def prioritytweets_show():
 
 
 @bp.route('/prioritytweets/<path:sentiment>/<path:rule>/<path:hours>')
-def analytics_show_rule(sentiment, rule, hours):
+def prioritytweets_show_rule(sentiment, rule, hours):
     if not session.get('logged_in'):
         return redirect(url_for('routes.home'))
     else:
@@ -271,6 +272,42 @@ def analytics_show_rule(sentiment, rule, hours):
         tweets=prioritytweets,
         menu_rules=generate_menu_items()
     )
+
+
+@bp.route('/train/feedback/<path:tid>/<path:sent>', methods=['GET', 'POST'])
+def prioritytweets_retrain(tid, sent):
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+
+        try:
+            tweet_id = int(tid)
+            sentiment = int(sent)
+        except ValueError:
+            return error_page("Invalid URLs")
+
+        # Check the tweet belongs to the user
+        db = get_db_session()
+        query = db.query(
+            Tweet
+        ).join(
+            Rule
+        ).filter(
+            and_(Tweet.id == tweet_id, Rule.userid == userdata['user_id'])
+        )
+
+        try:
+            query.one()
+        except NoResultFound:
+            return error_page("Invalid Tweet ID")
+
+        ts = TrainingSystem()
+        return error_page(ts.train_on_tweet(tweet_id, sentiment))
 
 
 @bp.route('/analytics/show/<path:rule>', methods=['POST', 'GET'])
