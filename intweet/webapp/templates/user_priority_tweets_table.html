@@ -1,0 +1,32 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+<div class="header">
+    <h1>Priority Tweets</h1>
+    <h2>Last 48 Hour Summary</h2>  
+</div>
+
+<div class="content">
+  <p>
+    <table class="pure-table">
+      <thead>
+        <tr>
+          <th>Rule</th>
+          <th>Negative</th>
+          <th>Neutral</th>
+          <th>Positive</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rule in results_table %}
+        <tr class="{{ loop.cycle('', 'pure-table-odd') }}"> 
+          <td>{{ rule[0] }}</td>
+          <td><a href="{{ global_config.site_url }}/prioritytweets/negative/{{ rule[1] }}/48" class="pure-button pure-button-error">{{ rule[2] }}</a></td>
+          <td><a href="{{ global_config.site_url }}/prioritytweets/neutral/{{ rule[1] }}/48" class="pure-button">{{ rule[3] }}</a></td>
+          <td><a href="{{ global_config.site_url }}/prioritytweets/positive/{{ rule[1] }}/48" class="pure-button pure-button-success">{{ rule[4] }}</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </p>
+</div>
+{% endblock %}
