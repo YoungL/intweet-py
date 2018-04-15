@@ -1,0 +1,84 @@
+{% extends "user_base.html" %}
+{% block body_content %}
+<script>
+$(document).ready(function(){
+    $("tr").css('cursor', 'pointer');
+    $(".toggler").click(function(e){
+        e.preventDefault();
+        $('.cat'+$(this).attr('data-prod-cat')).toggle();
+    }
+    
+    );
+
+    var $selector = $('a.reclassify');
+    
+    $selector.click(function(){
+     var $this = $(this),
+      id = $this.attr('data-id'),
+      sent = $this.attr('data-sent'),
+      $prev = $this.prev();
+        if ($this.hasClass("pure-button-disabled")){
+            $('#'+id+'b').hide();
+        }
+        else{
+             $.ajax({
+                type: 'post',
+                url: '{{ global_config.site_url }}/prioritytweets/feedback/'+id+'/' +sent,
+                success: function(data) {
+                        if ($this.hasClass("pure-button-error")){
+                            $('#'+id+'a').animate( {backgroundColor:'yellow'}, {queue: false}, 1000).fadeOut(1000,function() {
+                                $('#'+id+'a').remove();
+                            });
+                            $('#'+id+'b').animate( {backgroundColor:'yellow'}, {queue: false}, 1000).fadeOut(1000,function() {
+                                $('#'+id+'b').remove();
+                            });
+                        }
+                        else{
+                            $('#'+id+'btd').empty();
+                            $('#'+id+'btd').append("<a class=\"pure-button pure-button-success pure-button-disabled reclassify\" data-id=\"0\" data-sent=\"0\">Correct</a>");
+                        }
+                }
+             });
+        }
+     return false;
+    });
+});
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    
+  });
+</script>
+<div class="header">
+  <h1>Priority Inbox ({{ sentiment }})</h1>
+  <h2>Rule: {{ ruledata.rulename }}</h2>  
+</div>
+<div class="content">
+  <p>
+    <table class="pure-table">
+      <tbody>
+        {% for tweet in tweets %}
+        <tr class="toggler" data-prod-cat="{{ loop.index }}" id="{{ tweet.id }}a">
+          <td>
+            <img src="{{ tweet.profile_image_url_https }}" alt="" width="50" height="50" />
+          </td>
+          <td>
+            <strong>{{ tweet.from_screen_name }}</strong> - {{ tweet.timestamp }}<br />
+            {{ tweet.tweet }}
+          </td>
+        </tr>
+        <tr class="cat{{ loop.index }}" style="display:none" id="{{ tweet.id }}b">
+          <td>&nbsp;</td>
+          <td id="{{ tweet.id }}btd">
+            <a href="{{ global_config.site_url }}/prioritytweets/feedback/{{ tweet.id }}/1" class="pure-button pure-button-success reclassify" data-id="{{ tweet.id }}" data-sent="1">Correct</a> 
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="0">Negative</a>
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="2">Positive</a>
+          </td>
+        </tr> 
+        {% endfor %}         
+      </tbody>
+    </table>
+  </p>
+</div>
+{% endblock %}

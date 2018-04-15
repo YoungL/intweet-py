@@ -163,6 +163,116 @@ def register():
     )
 
 
+@bp.route('/prioritytweets/', methods=['GET'])
+def prioritytweets_show():
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+        local_config = {
+            "page_name": "Priority Tweets",
+            "monitor": True,
+            "prioritytweets": True
+        }
+
+        db = get_db_session()
+        results = db.execute(
+            'SELECT t1.rulename, t1.id, ( \
+                SELECT count(*) \
+                FROM tbl_raw_tweets t2 \
+                WHERE t1.id = t2.rule \
+                    AND t2.sentiment=0 \
+                    AND timestamp > CURDATE()-2 \
+            ) AS negative_count, (\
+                SELECT count(*) \
+                FROM tbl_raw_tweets t2 \
+                WHERE t1.id = t2.rule \
+                    AND t2.sentiment=1 \
+                    AND timestamp > CURDATE()-2 \
+            ) AS neutral_count,( \
+                SELECT count(*) \
+                FROM tbl_raw_tweets t2 \
+                WHERE t1.id = t2.rule \
+                    AND t2.sentiment=2 AND \
+                    timestamp > CURDATE()-2 \
+            ) AS positive_count \
+            FROM tbl_monitor t1 \
+            WHERE t1.userid=1 \
+              AND t1.parentrule IS NULL \
+            GROUP BY t1.id \
+            ORDER BY t1.rulename ASC'
+        )
+
+        return render_template(
+            'user_priority_tweets_table.html',
+            global_config=CONFIG,
+            local_config=local_config,
+            userdata=userdata,
+            menu_rules=generate_menu_items(),
+            results_table=results
+        )
+
+
+@bp.route('/prioritytweets/<path:sentiment>/<path:rule>/<path:hours>')
+def analytics_show_rule(sentiment, rule, hours):
+    if not session.get('logged_in'):
+        return redirect(url_for('routes.home'))
+    else:
+        userdata = {
+            'fullname': session.get('name'),
+            'email': session.get('email'),
+            'user_id': session.get('user_id')
+        }
+
+    # Validate our variable inputs
+    if sentiment not in ("negative", "positive", "neutral"):
+        return error_page("Invalid URL")
+
+    try:
+        rule = int(rule)
+        hours = int(hours)
+    except ValueError:
+        return error_page("Invalid URL")
+
+    db = get_db_session()
+    query = db.query(Rule).\
+        filter(and_(Rule.id == rule, Rule.userid == userdata['user_id']))
+
+    try:
+        rule = query.one()
+    except NoResultFound:
+        return error_page("Invalid Rule ID")
+
+    local_config = {
+        "page_name": "Priority Inbox for %s (%s)" % (rule.rulename, sentiment),
+        "monitor": True,
+        "prioritytweets": True
+    }
+
+    timefilter = datetime.date.today() - datetime.timedelta(hours=hours)
+
+    query = db.query(Tweet).filter(
+        Tweet.rule == rule, Tweet.timestamp > timefilter
+    )
+
+    prioritytweets = query.all()
+
+    return render_template(
+        'user_priority_tweets.html',
+        global_config=CONFIG,
+        local_config=local_config,
+        userdata=userdata,
+        ruledata=rule,
+        sentiment=sentiment,
+        tweets=prioritytweets,
+        menu_rules=generate_menu_items()
+    )
+
+
 @bp.route('/analytics/show/<path:rule>', methods=['POST', 'GET'])
 def analytics_show(rule):
     if not session.get('logged_in'):
