@@ -77,9 +77,19 @@ $(document).ready(function(){
         <tr class="cat{{ loop.index }}" style="display:none" id="{{ tweet.id }}b">
           <td>&nbsp;</td>
           <td id="{{ tweet.id }}btd">
+            {% if sentiment == "negative" %}
+            <a href="{{ global_config.site_url }}/train/feedback/{{ tweet.id }}/0" class="pure-button pure-button-success reclassify" data-id="{{ tweet.id }}" data-sent="0">Correct</a> 
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="1">Neutral</a>
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="2">Positive</a>
+            {% elif sentiment == "neutral" %}
             <a href="{{ global_config.site_url }}/train/feedback/{{ tweet.id }}/1" class="pure-button pure-button-success reclassify" data-id="{{ tweet.id }}" data-sent="1">Correct</a> 
             <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="0">Negative</a>
             <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="2">Positive</a>
+            {% else %}
+            <a href="{{ global_config.site_url }}/train/feedback/{{ tweet.id }}/2" class="pure-button pure-button-success reclassify" data-id="{{ tweet.id }}" data-sent="2">Correct</a> 
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="0">Negative</a>
+            <a href="" class="pure-button pure-button-error reclassify" data-id="{{ tweet.id }}" data-sent="1">Neutral</a>
+            {% endif %}
           </td>
         </tr> 
         {% endif %}
