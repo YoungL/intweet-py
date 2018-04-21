@@ -24,7 +24,7 @@ class TrainingSystem:
 
         # Don't train on the same tweet more than once!
         if tweet.trained > 0:
-            return True 
+            return True
 
         # Step 1. Update the sentiment on the tweet
         tweet.trained = 1
