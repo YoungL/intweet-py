@@ -230,7 +230,13 @@ def prioritytweets_show_rule(sentiment, rule, hours):
         }
 
     # Validate our variable inputs
-    if sentiment not in ("negative", "positive", "neutral"):
+    sentiments = {
+        "negative": 0,
+        "neutral": 1,
+        "positive": 2
+    }
+
+    if sentiment not in sentiments:
         return error_page("Invalid URL")
 
     try:
@@ -256,9 +262,11 @@ def prioritytweets_show_rule(sentiment, rule, hours):
 
     timefilter = datetime.date.today() - datetime.timedelta(hours=hours)
 
-    query = db.query(Tweet).filter(
-        Tweet.rule == rule, Tweet.timestamp > timefilter
-    )
+    query = db.query(Tweet).filter(and_(
+        Tweet.rule == rule,
+        Tweet.timestamp > timefilter,
+        Tweet.sentiment == sentiments[sentiment]
+    ))
 
     prioritytweets = query.all()
 
