@@ -62,6 +62,7 @@ class TrainingSystem:
                 # Keep record of each piece of text used to train system
                 training_text_items.append(
                     "('%s', %d)" % (re.escape(text), sentiment)
+
                 )
 
                 processed_text = tpp.process_text(text)
