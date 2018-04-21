@@ -3,6 +3,7 @@ from intweet.models.tweet import Tweet
 from intweet.textpreprocessor import TextPreProcessor
 from sqlalchemy.orm.exc import NoResultFound
 from collections import Counter
+import re
 
 
 class TrainingSystem:
@@ -16,14 +17,14 @@ class TrainingSystem:
         try:
             tweet = query.one()
         except NoResultFound:
-            return False
+            raise ValueError("Invalid tweet_id")
 
         if sentiment not in (0, 1, 2):
-            return False
+            raise ValueError("Expected sentiment to be 0, 1 or 2")
 
         # Don't train on the same tweet more than once!
         if tweet.trained > 0:
-            return False
+            return True 
 
         # Step 1. Update the sentiment on the tweet
         tweet.trained = 1
@@ -60,7 +61,8 @@ class TrainingSystem:
 
                 # Keep record of each piece of text used to train system
                 training_text_items.append(
-                    "('%s', %d)" % (text, sentiment)
+                    "('%s', %d)" % (re.escape(text), sentiment)
+
                 )
 
                 processed_text = tpp.process_text(text)
